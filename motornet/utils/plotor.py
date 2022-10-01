@@ -121,8 +121,9 @@ def plot_2dof_arm_over_time(axis, arm, joint_state, cmap: str = 'viridis', linew
     axis.set_aspect('equal', adjustable='box')
 
 
-def animate_trajectory(joint_position, model, save_animation = False, path_name='./Arm_animation.mp4'):
-    
+def animate_trajectory(joint_position, model, save_animation=False, path_name='./Arm_animation.mp4',
+                       plot_targets=None, erase_trail_time=None):
+    # TODO: Add functionality for plot_targets and erase_trail_time for point_mass skeleton
     # Get Plant and Skeleton info
     state_dim = model.task.network.plant.skeleton.state_dim
     dt = model.task.network.plant.skeleton.dt.numpy()
@@ -130,6 +131,9 @@ def animate_trajectory(joint_position, model, save_animation = False, path_name=
 
     assert joint_position.shape[0] == 1    
     joint_position = tf.reshape(joint_position, (-1, state_dim)).numpy()
+
+    if plot_targets is not None:
+        plot_targets = np.expand_dims(plot_targets, axis=2)
 
     if skeleton_type == 'point_mass':
         fig = plt.figure()
@@ -177,10 +181,11 @@ def animate_trajectory(joint_position, model, save_animation = False, path_name=
         L1_len = model.task.network.plant.skeleton.L1.numpy()
         L2_len = model.task.network.plant.skeleton.L2.numpy()
         fig = plt.figure()
-        ax = plt.axes(xlim=(-(L1_len + L2_len), L1_len + L2_len), ylim=(-.1, L1_len + L2_len))
+        ax = plt.axes(xlim=(-(L1_len + L2_len) - 0.05, L1_len + L2_len + 0.05), ylim=(-.1, L1_len + L2_len + 0.05))
         line, = ax.plot([], [], lw=2, alpha=0.4, color='red')  # Movement path
-        L1, = ax.plot([], [], lw=4, color='C0')  # L1
-        L2, = ax.plot([], [], lw=4, color='C1')  # L2
+        L1, = ax.plot([], [], lw=4, color='C1')  # L1
+        L2, = ax.plot([], [], lw=4, color='C0')  # L2
+        targets = ax.scatter([], [], s=500, color='white')
 
         # plt.title('Desired Title')
         # Axis control
@@ -209,11 +214,13 @@ def animate_trajectory(joint_position, model, save_animation = False, path_name=
         # Initialization of data lists
         def init():
             # creating void frame
+            if plot_targets is not None:
+                targets.set_offsets(np.array([0, 0]).T)
             line.set_data([], [])
             L1.set_data([], [])
             L2.set_data([], [])
-            ax.scatter([0], [0])
-            return line, L1, L2
+            ax.scatter([0], [0], color='C1')
+            return line, L1, L2, targets
 
         # Empty List for trajectories and arm position
         xdata, ydata = [], []
@@ -226,6 +233,11 @@ def animate_trajectory(joint_position, model, save_animation = False, path_name=
             # Append the endpoint position
             xdata.append(end_pos_x_l1 + end_pos_x_l2)
             ydata.append(end_pos_y_l1 + end_pos_y_l2)
+            if erase_trail_time is not None:
+                pop_index = len(xdata)-erase_trail_time
+                if pop_index >= 0:
+                    xdata.pop(pop_index)
+                    ydata.pop(pop_index)
             line.set_data(xdata, ydata)
 
             # Append the L1 position
@@ -238,7 +250,12 @@ def animate_trajectory(joint_position, model, save_animation = False, path_name=
             L2_ydata = [end_pos_y_l1, end_pos_y_l1 + end_pos_y_l2]
             L2.set_data(L2_xdata, L2_ydata)
 
-            return line, L1, L2
+            # Update targets
+            if plot_targets is not None:
+                targ_data = np.squeeze(plot_targets[i, :, :]).T
+                targets.set_offsets(targ_data)
+
+            return line, L1, L2, targets
         # call animation
         anim = animation.FuncAnimation(
             fig,
