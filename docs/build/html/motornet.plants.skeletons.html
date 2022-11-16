@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="motornet.utils" href="motornet.utils.html" /><link rel="prev" title="motornet.plants.muscles" href="motornet.plants.muscles.html" />
 
     <meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
-        <title>motornet.plants.skeletons - MotorNet 0.1.2 documentation</title>
+        <title>motornet.plants.skeletons - MotorNet 0.1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -133,7 +133,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">MotorNet 0.1.2 documentation</div></a>
+      <a href="index.html"><div class="brand">MotorNet 0.1.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -156,7 +156,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">MotorNet 0.1.2 documentation</span>
+  <span class="sidebar-brand-text">MotorNet 0.1.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -239,7 +239,7 @@
 <span id="motornet-plants-skeletons"></span><h1>motornet.plants.skeletons<a class="headerlink" href="#module-motornet.plants.skeletons" title="Permalink to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="motornet.plants.skeletons.PointMass">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">motornet.plants.skeletons.</span></span><span class="sig-name descname"><span class="pre">PointMass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">space_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'point_mass'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#motornet.plants.skeletons.PointMass" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">motornet.plants.skeletons.</span></span><span class="sig-name descname"><span class="pre">PointMass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">space_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'point_mass'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#motornet.plants.skeletons.PointMass" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#motornet.plants.skeletons.Skeleton" title="motornet.plants.skeletons.Skeleton"><code class="xref py py-class docutils literal notranslate"><span class="pre">Skeleton</span></code></a></p>
 <p>A simple point-mass skeleton. The point of the point-mass is considered as a bone at the implementation level, so
 this can be conceptualized as a “one-bone” skeleton with a length of <cite>0</cite> and no joint. However, note that the number

@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="motornet.plants.muscles" href="motornet.plants.muscles.html" /><link rel="prev" title="motornet.nets.models" href="motornet.nets.models.html" />
 
     <meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
-        <title>motornet.plants - MotorNet 0.1.2 documentation</title>
+        <title>motornet.plants - MotorNet 0.1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -133,7 +133,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">MotorNet 0.1.2 documentation</div></a>
+      <a href="index.html"><div class="brand">MotorNet 0.1.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -156,7 +156,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">MotorNet 0.1.2 documentation</span>
+  <span class="sidebar-brand-text">MotorNet 0.1.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -397,7 +397,13 @@ attributes defined at initialization.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="motornet.plants.plants.Plant.get_geometry">
 <span class="sig-name descname"><span class="pre">get_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">joint_state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#motornet.plants.plants.Plant.get_geometry" title="Permalink to this definition">#</a></dt>
-<dd><p>Computes the geometry state from the joint state.</p>
+<dd><p>Computes the geometry state from the joint state.
+Computes the geometry state from the joint state.
+Geometry state dimensionality is <cite>[n_batch, n_timesteps, n_states, n_muscles]</cite>. By default, there are as many
+states as there are moments (that is, one per degree of freedom in the plant) plus two for musculotendon length
+and musculotendon velocity. However, note that how many states and what they represent may vary depending on
+the <a class="reference internal" href="#motornet.plants.plants.Plant" title="motornet.plants.plants.Plant"><code class="xref py py-class docutils literal notranslate"><span class="pre">Plant</span></code></a> subclass. This should be available via the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">geometry_state_names</span></code> attribute.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>joint_state</strong> – <cite>Tensor</cite>, the joint state from which the geometry state is computed.</p>

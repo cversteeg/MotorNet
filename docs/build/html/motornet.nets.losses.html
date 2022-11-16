@@ -15,7 +15,7 @@
     <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="motornet.nets.models" href="motornet.nets.models.html" /><link rel="prev" title="motornet.nets.layers" href="motornet.nets.layers.html" />
 
     <meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
-        <title>motornet.nets.losses - MotorNet 0.1.2 documentation</title>
+        <title>motornet.nets.losses - MotorNet 0.1.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -133,7 +133,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">MotorNet 0.1.2 documentation</div></a>
+      <a href="index.html"><div class="brand">MotorNet 0.1.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -156,7 +156,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">MotorNet 0.1.2 documentation</span>
+  <span class="sidebar-brand-text">MotorNet 0.1.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
@@ -248,6 +248,38 @@ between the model’s output and a user-fed label.</p></li>
 loss scaled by a used-defined <cite>deriv_weight</cite> scalar compared to the value.</p></li>
 </ul>
 </div>
+<dl class="py class">
+<dt class="sig sig-object py" id="motornet.nets.losses.ClippedPositionLoss">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">motornet.nets.losses.</span></span><span class="sig-name descname"><span class="pre">ClippedPositionLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'position'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#motornet.nets.losses.ClippedPositionLoss" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">LossFunctionWrapper</span></code></p>
+<p>Applies a L1 penalty to positional error between the model’s output positional state <code class="docutils literal notranslate"><span class="pre">x</span></code> and a user-fed
+label position <code class="docutils literal notranslate"><span class="pre">y</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">xp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># remove velocity from the positional state</span>
+<span class="n">yp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">xp</span> <span class="o">-</span> <span class="n">yp</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>If the radial distance to the desired position is less than a user-defined radius (target size), the loss is
+clipped to be 0.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The positional error does not include velocity, hence the use of <code class="docutils literal notranslate"><span class="pre">np.split</span></code> to extract position from the
+state array.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_size</strong> – <cite>Float</cite>, the radius around the desired position within which the position loss is clipped to 0.</p></li>
+<li><p><strong>name</strong> – <cite>String</cite>, the name (label) to give to the compounded loss object. This is used to print, plot, and
+save losses during training.</p></li>
+<li><p><strong>reduction</strong> – The reduction method used. The default value is
+<code class="docutils literal notranslate"><span class="pre">tensorflow.python.keras.utils.losses_utils.ReductionV2.AUTO</span></code>.
+See the <cite>Tensoflow</cite> documentation for more details.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="motornet.nets.losses.CompoundedLoss">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">motornet.nets.losses.</span></span><span class="sig-name descname"><span class="pre">CompoundedLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">losses</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_weights</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'compounded_loss'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#motornet.nets.losses.CompoundedLoss" title="Permalink to this definition">#</a></dt>
