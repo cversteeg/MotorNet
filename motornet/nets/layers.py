@@ -358,6 +358,17 @@ class GRUNetwork(Network):
 
     def build(self, input_shapes):
 
+        input_conv_0 = tf.keras.layers.Conv2D(
+            32, 8, # working 16, 8
+            activation='relu',
+            padding='same',
+            name='input_conv',
+            kernel_regularizer=self.kernel_regularizer)
+        self.layers.append(input_conv_0)
+
+        pool_layer_0 = tf.keras.layers.MaxPooling2D(pool_size=(3, 3)) # working 4, 4
+        self.layers.append(pool_layer_0)
+
         for k in range(self.n_hidden_layers):
             layer = GRUCell(
                 units=self.n_units[k],
@@ -442,13 +453,54 @@ class GRUNetwork(Network):
         """
         new_hidden_states_dict = {}
         new_hidden_states = []
-        x = inputs
 
-        for k in range(self.n_hidden_layers):
-            x, new_hidden_state = self.layers[k](x, states[- self.n_hidden_layers + k])
-            new_hidden_state_noisy = self.add_noise((new_hidden_state, self.hidden_noise_sd))
-            new_hidden_states_dict[self.layer_state_names[k]] = new_hidden_state_noisy
-            new_hidden_states.append(new_hidden_state_noisy)
+
+        grid_size = 30
+        vis_input = inputs[:, -grid_size**2:]
+        vis_input = tf.reshape(vis_input, [-1, grid_size, grid_size])
+
+        #pos = inputs[:, -(grid_size ** 2) - 2: -grid_size ** 2]
+        #pos = (pos[:, 0:2] + 0.7) / 1.5
+        #ind = tf.cast(tf.floor(pos * grid_size), dtype=tf.int32)
+        #batch_list = tf.expand_dims(tf.range(0, tf.shape(pos)[0], delta=1), axis=1)
+        #indices = tf.concat([batch_list, ind], axis=1)
+        #updates = tf.ones((tf.shape(pos)[0]))
+        #feedback_input = tf.tensor_scatter_nd_update(tf.zeros_like(vis_input), indices, updates)
+
+        #vis_input = tf.concat([tf.expand_dims(vis_input, axis=3),
+        #                       tf.expand_dims(feedback_input, axis=3)],
+        #                      axis=3)
+        #vis_input = tf.expand_dims(vis_input, axis=3) + tf.expand_dims(feedback_input, axis=3)
+
+        vis_input = tf.expand_dims(vis_input, axis=3)
+        vis_input = self.layers[0](vis_input)
+        vis_input = self.layers[1](vis_input)
+
+        vis_input = tf.keras.layers.Flatten()(vis_input)
+
+        ##
+        k = 0
+        #x = vis_input
+        x = tf.concat([vis_input, inputs[:, (-grid_size**2)-3: -grid_size**2]], axis=1)
+        x, new_hidden_state = self.layers[k+2](x, states[- self.n_hidden_layers + k])
+        new_hidden_state_noisy = self.add_noise((new_hidden_state, self.hidden_noise_sd))
+        new_hidden_states_dict[self.layer_state_names[k]] = new_hidden_state_noisy
+        new_hidden_states.append(new_hidden_state_noisy)
+
+        x = tf.concat([inputs[:, 0:(-grid_size**2)], x], axis=1)
+
+        k = 1
+        x, new_hidden_state = self.layers[k+2](x, states[- self.n_hidden_layers + k])
+        new_hidden_state_noisy = self.add_noise((new_hidden_state, self.hidden_noise_sd))
+        new_hidden_states_dict[self.layer_state_names[k]] = new_hidden_state_noisy
+        new_hidden_states.append(new_hidden_state_noisy)
+
+        #for k in range(self.n_hidden_layers):
+        #    x, new_hidden_state = self.layers[k](x, states[- self.n_hidden_layers + k])
+        #    new_hidden_state_noisy = self.add_noise((new_hidden_state, self.hidden_noise_sd))
+        #    new_hidden_states_dict[self.layer_state_names[k]] = new_hidden_state_noisy
+        #    new_hidden_states.append(new_hidden_state_noisy)
+
         u = self.layers[-1](x)
         return u, new_hidden_states, new_hidden_states_dict
 
